@@ -1,0 +1,2 @@
+# AutoFindHiddenXss
+AutoFindHiddenXss
