@@ -1,5 +1,5 @@
 (function(){
-	var onlyString = 'NaNE=1234<>"';
+	var onlyString = '\''+(new Date()).valueOf()+'"';
 	var protocol = window.location.protocol;
 	var host = window.location.host;
 	var href = window.location.href;
@@ -41,9 +41,10 @@
 				async:false,
 			})
 			.done(function(data) {
-				if(data.indexOf(parameter[i].split("=")[1]) != "-1"){
+				if(data.indexOf(onlyString) != "-1"){
+					console.log(onlyString)
 					alert("当前URL参数" +  parameter[i].split("=")[0] + "存在XSS漏洞");
-					// $("body").append("<img src='http://xss.cn/getXSS.html?host=$" + host + "&$xss=$" + parameter[i].split("=")[0] + "&$url=$" + window.location.href + "&$rand=$" + Date.parse(new Date()) + "' style='display:none;'>");
+					console.log(parameter[i].split("=")[0]);
 				}
 			})
 			parameter[i] = parameterData;
@@ -64,7 +65,7 @@
 				async:false,
 			})
 			.done(function(data) {
-				if(data.indexOf(fileUrlXss) != "-1"){
+				if(data.indexOf(onlyString) != "-1"){
 					xss += fileURL + "|";
 				}
 			})
@@ -79,12 +80,12 @@
 			url = protocol + "//" + host + "/" + urlPath.join("/") + "/" + fileURL;
 			$.ajax({
 				url: url,
-				type: 'post',
+				type: 'get',
 				dataType: 'text',
 				async:false,
 			})
 			.done(function(data){
-				if(data.indexOf(urlPath[i]) != "-1"){
+				if(data.indexOf(onlyString) != "-1"){
 					xss += urlPath[i].substring(0,urlPath[i].length-11) + "|";
 				}
 			})
@@ -95,7 +96,7 @@
 		}else{
 			xss = xss.substring(0,xss.length-1);
 			alert("当前伪静态路径或者文件" + xss + "存在XSS漏洞");
-			// $("body").append("<img src='http://xss.cn/getXSS.html?host=$" + host + "&$xss=$" + xss + "&$url=$" + window.location.href + "&$rand=$" + Date.parse(new Date()) + "' style='display:none;'>");
+			console.log(xss)
 		}
 	}
 	function form_Xss(){	//form表单检测XSS
@@ -173,10 +174,10 @@
 					return false;
 				}else{
 					xss = xss.substring(0,xss.length-1);
-					// alert("当前页面action为" + actionUrl + "的form表单第" + xss + "个input存在XSS漏洞");
+					alert("当前页面action为" + actionUrl + "的form表单第" + xss + "个input存在XSS漏洞");
 					$(tureForm[i]).find("input").eq(xss - 1).css("border"," 3px solid red")
 															.val("此输入框存在XSS	");
-					// $("body").append("<img src='http://xss.cn/formXSS.html?host=$" + href + "&$xss=$" + xss + "&$url=$" +actionUrl + "&$rand=$" + Date.parse(new Date()) + "' style='display:none;'>");
+					console.log($(tureForm[i]).find("input:not(:submit)")[xss-1].getAttribute("name"))
 				}
 			})
 		}
@@ -209,9 +210,9 @@
 				async:false,
 			})
 			.done(function(data) {
-				if(data.indexOf(parameter[i].split("=")[1]) != "-1"){
+				if(data.indexOf(onlyString) != "-1"){
 					alert("当前hidden属性input参数" +  parameter[i].split("=")[0] + "存在XSS漏洞");
-					// $("body").append("<img src='http://xss.cn/getXSS.html?host=$" + host + "&$xss=$" + parameter[i].split("=")[0] + "&$url=$" + window.location.href + "&$rand=$" + Date.parse(new Date()) + "' style='display:none;'>");
+					console.log(parameter[i].split("=")[0])
 				}
 			})
 			parameter[i] = parameterData;
